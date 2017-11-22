@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: worker
+        tier: worker
+    spec:
+      volumes:
+      - name: concourse-keys
+        emptyDir: {}
+      containers:
+      - name: my-nginx
+        image: nginx
+        volumeMounts:
+        - mountPath: /concourse-keys
+          name: concourse-keys
+      - name: worker
+        image: concourse/concourse:latest
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /concourse-keys
+          name: concourse-keys
+        args: ["worker"]
+        env:
+        - name: CONCOURSE_TSA_HOST
+          value: concourse-web-internal.default.svc.cluster.local
+      initContainers:
+      - name: init-keys
+        image: datianshi/concourse-init-keys
+        args: ["worker"]
+        volumeMounts:
+        - mountPath: /concourse-keys
+          name: concourse-keys
+        env:
+        - name: CONCOURSE_TSA_PUBLIC_KEY
+          value: |
+            ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfYBL4fzHuBF3+skOBdR3JIvurz83XB5qQd8KBm4sLZABliVHsTAnf4ZS9aCbCLFFpsGITeJUxAltDkaEbKQIOTTe4HL8rzimphzXg5ghFl66Lq21RoNFAg5pA+dusGbWuxEgzwax2eIRpGorhCv6cECSkiOrSKtueDrovXJu1yKQgPyLOIKGQnGwP/p6t4eaajVnyLrgXUUnNw6sHBnvmfg/XIBTnVx8ocD87qnXHwkN5mrmbMGbS4bNaofaLhsNHDhxese3vS4pFm6X9Zf9c0OsM6BaHL8CH06sZrijnpU4T8Gs7Z8hGktVtIClgCEIvt8OxOM9XU7EgvOE+GKXn sding@pivotal-guest-405.sf.pivotallabs.com
+        - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
+          value: |
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEpAIBAAKCAQEAtni0M2thy6cnJwMKKoabvPQs9KKDmNasE4NJRzJPAf9Bi8v+
+            Q+xY6B7cBv6dRlQtu6pvNjJlbEeU+Lb+BU6CKij9EN32mxisrBGAQzFjmAD0mZ4I
+            KgZHcQq23fwphmB9BczPG5l8oReiAQbPXZFA7D5OoF+ytKd7dwmtj8BEsLfWoC8d
+            7he4CE9agqKhcquF3TxahF4Ba3PTkpYH/dkPzjndz1hPauJmN8OXRYJFbfmUo4Hy
+            HnjZfQGb/VnLzPFwRLG84TQ54dSiFsNvJ/FeFxMePhJhIGCXXm+TD4gVvSxma0jP
+            BwtFp1fQvcV9FtDSRSQb7qjQ8jM/FAq2okgNdwIDAQABAoIBAFgm9f+FWAiX5y1M
+            paOnxiNB31oMDQFQbG881LDlmA/B7juIQH01+Dmjdu6WIQrx7eoky3dmX2MxLcH+
+            Pbf4lp+hj6iPYuzIvdqe1dUgThoIFCMGmrEauXbeEzwo7zKw+JVNvZx6yR/WF/jg
+            /lsYqkG3VCrcMKxf4SC/9y5kV4r7Y0GZ4pjvegCmkkg3A6gZCB/ayjSgAi4aB0HT
+            GhxnkAA34VH7SkgdVrfyZhpjaBf/XWNNhjVGVczzBW9Er6+OL0CVweekB4Tk7B8+
+            bD7q9IrLpAj6BO4JPJxeBp34kxgpRfrAxk3Vnlewbz1zk45JY3Z9O5t6OVOSsu5K
+            ZTOp1mkCgYEA8YBeQE39uKvhsl6snRZ+N/6sP2zGiPxjtIzPBbk+0DlJWcFxlLSs
+            h479WuCvKoUVdzlm2CMeJTQ0Bd4x9j0A9KoNnC1fBxXTgVaP8aanBNdRw4lpbizF
+            keEdEvh0KzaGVxysN6t+8BygdSdzDUsEvxLl4nWjOXQ4pOdHbNQT6RUCgYEAwW0b
+            BIbl4LtGzDRIlrvbaSzyKw7XXWkibqrgIasn0y/vN8BGJ3XohAAlo1/fQQOgay1L
+            WkGhZYL5BPtX3xn0W39uzILqRLL72x+0WwJFbcfRuqlKhHPZzza2kY4hJMsZT8YY
+            bkLpbEKT6zznesT5K7Ry6Oz+7DUJufe+F+RqJ1sCgYEA3HEel3gZd2590EGXMrUL
+            dbVkKWjzOKuZn39AoarcaVlBWUq4kNLzAbJGFaQugJOGapPdCsHTjIZATnLqDCjX
+            LH3len/31BHaRJ9tOVmz7zlUizZtJIJ9vZFM5rof4CofKnkjwpUqg6a92PKvlJy7
+            smZfrP1QhutNoUjz66USn5kCgYAUZCkt//6qA3RCQNzKL0HBQ8C/80+XBGdh3VfF
+            lOKc6/e/G+EJde+uQsm1AH1rwDMgOWUxPawDJJyV/t1TosvU/YkzvDVwSqIshpof
+            4gxpt2AP2psFfaUfqDf0/lPWKicf9tVKgnlTNW2cpg4NLkjKZ7qZfaqeQjUlSs3a
+            fPUH8wKBgQCfXOOobVwfT8G3HYZMAIDqxScPqsRpGO6Pfn5IikfZx5ZfDVM3zctj
+            Zbrd3AcAUrYEV3aUBzTv+mOJmKeRvfe8u6cEQTx4T+onizLK7Bqdl7tZOGcShN6V
+            3FBS18dpsZ9DMTP2Z9q8WAflUtFtBhB2APg/l2iOexj8skT2cLhL/A==
+            -----END RSA PRIVATE KEY-----
