@@ -24,6 +24,10 @@ spec:
         app: postgres
         tier: backend
     spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
       containers:
       - name: postgres
         image: postgres:9.5
@@ -35,6 +39,9 @@ spec:
         - name: POSTGRES_PASSWORD
           value: concourse
         - name: PGDATA
-          value: /database
+          value: /persist/database
         ports:
         - containerPort: 5432
+        volumeMounts:
+        - name: data
+          mountPath: /persist

@@ -6,9 +6,26 @@ Postgres Database is concourse management plane backend
 
 ```kubectl create -f postgres.yml```
 
+### Using vSphere Storage Class
+
+Assume the kubernetes cluster has vsphere provider. Below command is able to provision a disk through vCenter and mount to the postgres pod. When the pod is recreated, the storage is treated as persistant storage and all the pipelines/meta data still exist
+
+```
+kubectl create -f vsphere/storage-class.yml
+kubectl create -f vsphere/postgres-volume-claim.yml
+```
+
+### Using GCP Storage Class
+
+It is coming......
+
+### Using AWS Storage Class
+
+It is coming......
+
 ## Web pod (ATC and TSA)
 
-web consume postgres cluster ip through kubernates dns. It also creates an internal Cluster IP service so worker can register.
+web consume postgres cluster ip through kubernetes dns. It also creates an internal Cluster IP service so worker can register.
 
 ```kubectl create -f web.yml```
 
