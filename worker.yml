@@ -14,11 +14,6 @@ spec:
       - name: concourse-keys
         emptyDir: {}
       containers:
-      - name: my-nginx
-        image: nginx
-        volumeMounts:
-        - mountPath: /concourse-keys
-          name: concourse-keys
       - name: worker
         image: concourse/concourse:latest
         securityContext:

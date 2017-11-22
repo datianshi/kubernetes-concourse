@@ -35,11 +35,6 @@ spec:
       - name: concourse-keys
         emptyDir: {}
       containers:
-      - name: my-nginx
-        image: nginx
-        volumeMounts:
-        - mountPath: /concourse-keys
-          name: concourse-keys
       - name: web
         image: concourse/concourse:latest
         volumeMounts:
