@@ -10,7 +10,7 @@ Postgres Database is concourse management plane backend
 
 Assume the kubernetes cluster has vsphere provider. Below command is able to provision a disk through vCenter and mount to the postgres pod. When the pod is recreated, the storage is treated as persistant storage and all the pipelines/meta data still exist
 
-```
+```bash
 kubectl create -f vsphere/storage-class.yml
 kubectl create -f vsphere/postgres-volume-claim.yml
 ```
@@ -22,6 +22,12 @@ It is coming......
 ### Using AWS Storage Class
 
 It is coming......
+
+### Using Minikube hostpath Storage Class
+
+```bash
+kubectl create -f minikube/postgres-volume-claim.yml
+```
 
 ## Web pod (ATC and TSA)
 
@@ -45,6 +51,19 @@ concourse-external       NodePort    10.100.200.214   <none>        8080:30668/T
 ```
 
 fly -t atc login -c http://NODE_IP:30668
+
+and Login with atc/atc creds
+
+### Minikube
+For A Minikube based Kubernetes cluster, use the following handy script to get the Concourse IP/Port
+
+```bash
+MINIKUBE_IP=$(minikube ip)
+EXTERNAL_PORT=$(kubectl get services concourse-external -o json | jq ".spec.ports[0].nodePort")
+CONCOURSE_URL="http://${MINIKUBE_IP}:${EXTERNAL_PORT}"
+echo "Concourse Url: ${CONCOURSE_URL}"
+fly -t atc login -c $CONCOURSE_URL
+```
 
 ## Future work
 
