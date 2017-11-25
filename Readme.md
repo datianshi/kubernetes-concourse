@@ -43,13 +43,11 @@ web consume postgres cluster ip through kubernetes dns. It also creates an inter
 
 ```kubectl create -f worker.yml```
 
-## Expose concourse cluster with a NODE IP
-
-```kubectl create -f nodeport.yml```
-
 ## Access Concourse
 
 ### Use NODE IP to access
+
+  ```kubectl create -f nodeport.yml```
 
   ```
   kubectl get service
