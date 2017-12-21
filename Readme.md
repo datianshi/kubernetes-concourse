@@ -16,8 +16,8 @@ It is coming......
 ### Using AWS Storage Class
 
 ```bash
-kubectl create -f vsphere/storage-class.yml
-kubectl create -f vsphere/postgres-volume-claim.yml
+kubectl create -f aws/storage-class.yml
+kubectl create -f aws/postgres-volume-claim.yml
 ```
 
 ### Using Minikube hostpath Storage Class
@@ -66,7 +66,14 @@ web consume postgres cluster ip through kubernetes dns. It also creates an inter
   LoadBalancer Ingress:     a7f8d86aed20211e7886906e5f61a9c9-952285343.us-west-2.elb.amazonaws.com
   fly -t atc login -c https://a7f8d86aed20211e7886906e5f61a9c9-952285343.us-west-2.elb.amazonaws.com
   ```
+### NSX Load Balancer
 
+  ```bash
+  kubectl create -f vsphere/nsx-lb.yml
+  kubectl describe service concourse-external | grep 'LoadBalancer Ingress'
+  LoadBalancer Ingress:     10.193.54.218
+  fly -t atc login -c http://10.193.54.218:8080
+  ```
 
 ### Minikube
 For A Minikube based Kubernetes cluster, use the following handy script to get the Concourse IP/Port

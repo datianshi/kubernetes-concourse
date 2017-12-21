@@ -36,7 +36,7 @@ spec:
         emptyDir: {}
       containers:
       - name: web
-        image: concourse/concourse:latest
+        image: concourse/concourse:3.6.0
         volumeMounts:
         - mountPath: /concourse-keys
           name: concourse-keys

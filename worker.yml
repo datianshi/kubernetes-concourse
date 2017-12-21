@@ -15,7 +15,7 @@ spec:
         emptyDir: {}
       containers:
       - name: worker
-        image: concourse/concourse:latest
+        image: concourse/concourse:3.6.0
         securityContext:
           privileged: true
         volumeMounts:
