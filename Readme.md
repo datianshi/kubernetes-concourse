@@ -11,7 +11,10 @@ kubectl create -f vsphere/postgres-volume-claim.yml
 
 ### Using GCP Storage Class
 
-It is coming......
+```bash
+kubectl create -f gcp/storage-class.yml
+kubectl create -f gcp/postgres-volume-claim.yml
+```
 
 ### Using AWS Storage Class
 
@@ -65,6 +68,12 @@ web consume postgres cluster ip through kubernetes dns. It also creates an inter
   kubectl describe service concourse-external | grep 'LoadBalancer Ingress'
   LoadBalancer Ingress:     a7f8d86aed20211e7886906e5f61a9c9-952285343.us-west-2.elb.amazonaws.com
   fly -t atc login -c https://a7f8d86aed20211e7886906e5f61a9c9-952285343.us-west-2.elb.amazonaws.com
+  ```
+
+### GCP Load Balancer
+
+  ```
+  kubectl create -f gcp/lb.yml
   ```
 ### NSX Load Balancer
 
